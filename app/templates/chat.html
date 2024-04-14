@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        background-color: #171d1c;
+        font-family: "Kode Mono", monospace;
+      }
+
+      .mainSection {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .chatBot {
+        border-radius: 10px;
+        background-color: #efe9f4;
+        width: 50%;
+        height: 80%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .chatTitleBar {
+        width: 100%;
+        height: 15%;
+        border-radius: 10px 10px 0px 0px;
+        background-color: #5863f8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .chatTitleBar h1 {
+        color: #171d1c;
+      }
+
+      ul {
+        list-style-type: none;
+      }
+
+      .chatSection {
+        width: 100%;
+        height: 75%;
+        max-height: 75%;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .chatSection::-webkit-scrollbar {
+        display: none;
+      }
+
+      textarea::-webkit-scrollbar {
+        display: none;
+      }
+
+      .chatSectionList-item {
+        display: flex;
+        gap: 1%;
+        margin: 10px 0px;
+      }
+
+      .chatSectionList-item span {
+        align-self: flex-end;
+      }
+
+      span i {
+        color: #5863f8;
+        font-size: 25px;
+      }
+
+      .incoming p {
+        background-color: #e0e1e9;
+        max-width: 50%;
+        padding: 12px 8px;
+        border-radius: 10px 10px 10px 0px;
+      }
+
+      .outgoing {
+        justify-content: flex-end;
+      }
+
+      .outgoing p {
+        background-color: #5863f8;
+        max-width: 50%;
+        padding: 12px 8px;
+        border-radius: 10px 10px 0px 10px;
+        color: #e0e1e9;
+      }
+
+      p.timestamp {
+        font-size: 10px;
+        margin: 10px 0px;
+      }
+
+      p.incoming-timestamp {
+        margin-left: 40px;
+      }
+
+      .outgoing-timestamp {
+        text-align: right;
+      }
+
+      .chatInput {
+        width: 100%;
+        height: 10%;
+        border-radius: 0px 0px 10px 10px;
+        border-top: 1px solid #171d1c;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .chatInput textarea {
+        width: 100%;
+        height: 100%;
+        border: none;
+        outline: none;
+        resize: none;
+        padding: 10px 20px;
+        border-radius: 0px 0px 0px 10px;
+        background-color: #efe9f4;
+        font-size: 20px;
+      }
+
+      .chatInput span {
+        flex-basis: 10%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      span.hidden {
+        display: none;
+      }
+
+      @media only screen and (max-width: 441px) {
+        .chatBot {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="mainSection">
+      <div class="chatBot">
+        <form action="/upload" method="post" enctype="multipart/form-data">
+          <label for="file">File</label>
+          <input id="file" name="file" type="file" />
+          <button>Upload</button>
+        </form>
+        <div class="chatTitleBar">
+          <h1>ChadBot</h1>
+        </div>
+        <div class="chatSection">
+          <ul class="chatSectionList">
+            <li class="chatSectionList-item incoming">
+              <span><i class="fa-solid fa-robot"></i></span>
+              <p>Hello there, How can I help you today?</p>
+            </li>
+            <p class="timestamp incoming-timestamp"></p>
+            <!-- <audio id="recordedAudio" controls></audio> -->
+          </ul>
+        </div>
+        <div class="chatInput">
+          <textarea placeholder="Enter a message"></textarea>
+          <span class="hidden sendButton"
+            ><i class="fa-solid fa-paper-plane"></i
+          ></span>
+          <span class="microphone"><i class="fa-solid fa-microphone"></i></span>
+          <!-- <span><i class="fa-solid fa-play"></i></span> -->
+          <!-- <span><i class="fa-solid fa-pause"></i></span> -->
+          <!-- <span><i class="fa-solid fa-trash-can"></i></span> -->
+        </div>
+      </div>
+    </div>
+    <script>
+      let chatInput = document.querySelector(".chatInput textarea");
+      let chatInputButton = document.querySelector(".sendButton");
+      let chatMicrophone = document.querySelector(".microphone");
+      let chatBox = document.querySelector(".chatSectionList");
+      let timestampBox = document.querySelector("p.timestamp");
+      let userMessage;
+
+      const showSendButton = () => {
+        if (chatInput.value.trim() != "") {
+          console.log(chatInput.value.trim());
+          chatInputButton.classList.remove("hidden");
+          chatMicrophone.classList.add("hidden");
+        } else if (chatInput.value.trim() === "") {
+          console.log("nothing");
+          chatInputButton.classList.add("hidden");
+          chatMicrophone.classList.remove("hidden");
+        }
+      };
+
+      chatInput.addEventListener("input", showSendButton);
+
+      const getTimeStamp = () => {
+        // Get the current date and time
+        var currentDate = new Date();
+
+        // Extract hours, minutes, and AM/PM indicator
+        var hours = currentDate.getHours();
+        var minutes = currentDate.getMinutes();
+        var ampm = hours >= 12 ? "PM" : "AM";
+
+        // Convert hours to 12-hour format
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Handle midnight (0 hours)
+
+        // Add leading zeros to minutes if necessary
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+
+        // Construct the time string in the format "hours:minutes AM/PM"
+        var timeString = hours + ":" + minutes + " " + ampm;
+
+        return timeString;
+      };
+      timestampBox.innerHTML = getTimeStamp();
+
+      const createTimeStampElement = (className) => {
+        const timestampP = document.createElement("p");
+        timestampP.classList.add("timestamp", className);
+        let timestampPContent = getTimeStamp();
+
+        timestampP.innerHTML = timestampPContent;
+
+        return timestampP;
+      };
+
+      const createListItem = (message, className) => {
+        const chatLi = document.createElement("li");
+        chatLi.classList.add("chatSectionList-item", className);
+        let liContent;
+
+        if (className === "outgoing")
+          liContent = `<p>${message}</p> <span><i class="fa-solid fa-user"></i></span>`;
+        else if (className === "incoming")
+          liContent = `<span><i class="fa-solid fa-robot"></i></span><p>${message}</p>`;
+
+        chatLi.innerHTML = liContent;
+
+        return chatLi;
+      };
+
+      const handleChat = async () => {
+        userMessage = chatInput.value.trim();
+        if (userMessage === "") return;
+        let newLi = createListItem(userMessage, "outgoing");
+        if (!newLi) return;
+
+        chatBox.appendChild(newLi);
+
+        let newP = createTimeStampElement("outgoing-timestamp");
+        if (!newP) return;
+
+        chatBox.appendChild(newP);
+        chatBox.scrollTo(0, chatBox.scrollHeight);
+
+        // Send user input to FastAPI backend
+        const response = await fetch("/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ user_message: userMessage }),
+        });
+
+        if (!response.ok) {
+          console.error("Failed to process chat input");
+          return;
+        }
+
+        const responseData = await response.json();
+        const { response_message } = responseData;
+
+        // Display response on the screen
+        let newLi1 = createListItem(response_message, "incoming");
+        chatBox.appendChild(newLi1);
+
+        let newP1 = createTimeStampElement("incoming-timestamp");
+        chatBox.appendChild(newP1);
+
+        chatBox.scrollTo(0, chatBox.scrollHeight);
+
+        chatInput.value = "";
+        chatInputButton.classList.add("hidden");
+        chatMicrophone.classList.remove("hidden");
+      };
+
+      chatInputButton.addEventListener("click", handleChat);
+
+      // Voice input
+      var output = "";
+      let recognition;
+
+      const createAndAppendLi = (message, className) => {
+        let newLi = createListItem(message, className);
+        if (!newLi) return;
+
+        chatBox.appendChild(newLi);
+
+        let newP = createTimeStampElement(className + "-timestamp");
+        if (!newP) return;
+
+        chatBox.appendChild(newP);
+      };
+
+      chatMicrophone.addEventListener("click", () => {
+        chatMicrophone.classList.add("hidden");
+        chatInputButton.classList.remove("hidden");
+
+        if ("webkitSpeechRecognition" in window) {
+          recognition = new webkitSpeechRecognition();
+          recognition.lang = "en-US";
+          recognition.interimResults = true; // Enable interim results to display real-time transcriptions
+
+          recognition.onresult = (event) => {
+            let interimTranscript = "";
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+              if (event.results[i].isFinal) {
+                const transcript = event.results[i][0].transcript;
+                output += transcript + " ";
+                createAndAppendLi(output, "outgoing");
+                output = "";
+              } else {
+                interimTranscript += event.results[i][0].transcript;
+              }
+            }
+          };
+
+          recognition.onerror = (event) => {
+            console.error("Speech recognition error:", event.error);
+          };
+
+          recognition.start();
+        } else {
+          alert(
+            "Speech recognition not supported in your browser. Please use a different browser."
+          );
+        }
+      });
+
+      chatInputButton.addEventListener("click", () => {
+        chatMicrophone.classList.remove("hidden");
+        chatInputButton.classList.add("hidden");
+
+        if (recognition) {
+          recognition.stop();
+        }
+      });
+
+      chatInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault(); // Prevent adding a new line
+          handleChat(); // Your function to send the message
+        }
+      });
+    </script>
+  </body>
+</html>

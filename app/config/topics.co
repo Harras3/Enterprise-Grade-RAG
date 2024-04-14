@@ -1,0 +1,14 @@
+define user express greeting
+    "hello"
+
+define bot express greeting
+    "Hi, how are you"
+
+define flow greeting
+    user express greeting
+    bot express greeting
+
+define flow
+    user ...
+    $answer = execute llm_call(inputs=$last_user_message)
+    bot $answer

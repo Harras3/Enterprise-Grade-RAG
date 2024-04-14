@@ -1,0 +1,9 @@
+instructions:
+- type: general
+  content: Below is conversation between user and a chatbot
+
+
+models:
+- type: main
+  engine: openai
+  model: gpt-3.5-turbo
