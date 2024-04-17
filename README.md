@@ -1,4 +1,6 @@
 
+![Logo](https://github.com/Harras3/Production-Grade-RAG/blob/main/img/logo.png?raw=true)
+
 # Production Grade RAG Solution Template
 
 This is a template for Production Grade RAG solution focusing on Low latency. The code is very modular and contains the most important elements and can be very easily extended for your needs.
