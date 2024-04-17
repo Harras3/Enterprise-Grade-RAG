@@ -16,7 +16,7 @@ templates = Jinja2Templates(directory="templates")
 app_setup()
 print("Setup Complete")
 
-
+# This function returns the frontend of chatbot
 @app.get("/", response_class=HTMLResponse)
 async def chat_index(request: Request):
     
@@ -24,7 +24,7 @@ async def chat_index(request: Request):
         request=request, name="chat.html", context={"id": ""}
     )
 
-
+# This function takes in user query and returns the response
 @app.post("/chat")
 async def process_chat_input(request: Request):
     # Process the user input
@@ -38,7 +38,8 @@ async def process_chat_input(request: Request):
 UPLOAD_DIR = "uploads"  
 if not os.path.exists(UPLOAD_DIR):
     os.makedirs(UPLOAD_DIR)
-
+    
+# This function is used to store documents
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     print(file.filename)
