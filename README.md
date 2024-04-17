@@ -52,5 +52,6 @@ Finally run the following command to setup a run FAST API server.
 ```bash
    python -m uvicorn app.main:app --reload
 ```
-![App Screenshot](https://ibb.co/VjM9yLh)
+![App Screenshot](https://github.com/Harras3/Production-Grade-RAG/blob/main/img/flow.jpg?raw=true)
+
 
