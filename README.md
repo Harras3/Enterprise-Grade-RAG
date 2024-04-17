@@ -1,5 +1,5 @@
 
-![Logo](https://github.com/Harras3/Production-Grade-RAG/blob/main/img/logo.png?raw=true)
+![Logo](https://github.com/Harras3/Production-Grade-RAG/blob/main/img/logo.jpg?raw=true)
 
 # Production Grade RAG Solution Template
 
