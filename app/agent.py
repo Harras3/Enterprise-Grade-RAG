@@ -18,6 +18,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 os.environ['OPENAI_API_KEY'] = "Enter API KEY here"
 api_key  = "Enter API KEY here"
 
+# This function is used to setup embedding model, vector db and semantic cache
 def app_setup():
     global embedding 
     embedding= OpenAIEmbeddings(api_key=api_key)
@@ -55,11 +56,13 @@ def use_pdf(file_name: str):
     return 
 
 
+# This function adds the chunks into vector db
 def add_to_vectordb(text):
     splits = text_splitter.split_text(text)  
     vectordb.add_texts(splits)
     return
 
+# This function is used to connect vectordb and llm into langchain QAchain
 def start_llm():
     global llm
     llm = OpenAI(openai_api_key=api_key)
@@ -83,12 +86,14 @@ def start_llm():
     # llm=rails.llm, chain_type="stuff", retriever=mretriever)
     return
 
+# This function calls langchain QAchain
 def llm_call(inputs: str):
     print("llm call is here: ",inputs)
     result = qa_chain({"query": inputs})
     print("llm call is done: ",result)
     return result['result']
 
+#This function is used to setup guardrails
 def guardrails():
     config = RailsConfig.from_path("config")
     global rails
@@ -96,11 +101,13 @@ def guardrails():
     rails.register_action(llm_call,name="llm_call")
     return
 
+# This function checks for prompt in cache
 def check_cache(ques: str):
     if answer := semantic_cache.check(prompt=ques,return_fields=["prompt", "response", "metadata"],):
         return answer[0]
     return 0
-    
+
+# This function saves query and response into caches
 def set_cache(ques,result):
     semantic_cache.store(
         prompt=ques,
@@ -108,7 +115,7 @@ def set_cache(ques,result):
     )
 
 
-
+# The main flow of the chatbot is here
 def chat_llm(ques: str):
     nest_asyncio.apply()
     print("Start is here")
