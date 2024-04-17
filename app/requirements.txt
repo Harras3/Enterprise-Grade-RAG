@@ -1,3 +1,14 @@
 langchain
 redis
 langchain-openai
+redisvl
+nemoguardrails
+langchain_community
+fastapi
+uvicorn
+openai
+tiktoken
+pydantic
+python-dotenv
+jinja2
+pypdf
