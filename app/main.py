@@ -13,12 +13,13 @@ from agent import *
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
-
+app_setup()
+print("Setup Complete")
 
 
 @app.get("/", response_class=HTMLResponse)
 async def chat_index(request: Request):
-    app_setup()
+    
     return templates.TemplateResponse(
         request=request, name="chat.html", context={"id": ""}
     )
