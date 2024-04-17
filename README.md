@@ -55,6 +55,10 @@ Finally run the following command to setup a run FAST API server.
 ```bash
    python -m uvicorn main:app --reload
 ```
+## Contributers
 
+https://github.com/salmanjann
+
+Thank you for developing the frontend.
 
 
