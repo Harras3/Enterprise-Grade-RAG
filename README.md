@@ -53,7 +53,7 @@ As Langchain and vectordb is using gpt 3.5 and embedding model so api-key is nee
 Finally run the following command to setup a run FAST API server.
 
 ```bash
-   python -m uvicorn app.main:app --reload
+   python -m uvicorn main:app --reload
 ```
 
 
