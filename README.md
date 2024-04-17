@@ -21,6 +21,7 @@ A cache is used to store query embedding against previous chatbot responses. Thi
 Guardrails can be used before call to LLM to check for off topic quries, this is also very important as it will not allow the quries which are not related to the topic for which the RAG is being designed and will save the cost of LLM call.
 
 ## Flow of RAG
+![App Screenshot](https://github.com/Harras3/Production-Grade-RAG/blob/main/img/flow.jpg?raw=true)
 
 1) When a user enter a query on HTML frontend, it is passed to FAST API server.
 2) The user query will be passed to semantic cache and will be checked if exists in cache. If it exists then the response stored will be returned to the user.
@@ -52,8 +53,8 @@ As Langchain and vectordb is using gpt 3.5 and embedding model so api-key is nee
 Finally run the following command to setup a run FAST API server.
 
 ```bash
-   python -m uvicorn app.main:app --reload
+   python -m uvicorn main:app --reload
 ```
-![App Screenshot](https://github.com/Harras3/Production-Grade-RAG/blob/main/img/flow.jpg?raw=true)
+
 
 
