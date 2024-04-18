@@ -7,19 +7,19 @@ from fastapi import File, UploadFile
 import json
 import shutil
 import nest_asyncio
+import asyncio
 import os
-from agent import *
+from agent import ragbot
 
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
-app_setup()
-print("Setup Complete")
+bot = ragbot()
+
 
 # This function returns the frontend of chatbot
 @app.get("/", response_class=HTMLResponse)
 async def chat_index(request: Request):
-    
     return templates.TemplateResponse(
         request=request, name="chat.html", context={"id": ""}
     )
@@ -31,14 +31,14 @@ async def process_chat_input(request: Request):
     body = await request.body()
     user_message = json.loads(body.decode("utf-8"))
     loop = asyncio.get_event_loop()
-    response_message = chat_llm(user_message["user_message"])
+    response_message = bot.chat_llm(user_message["user_message"])
     return {"response_message": response_message}
 
 
 UPLOAD_DIR = "uploads"  
 if not os.path.exists(UPLOAD_DIR):
     os.makedirs(UPLOAD_DIR)
-    
+
 # This function is used to store documents
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
@@ -48,7 +48,7 @@ async def upload_file(file: UploadFile = File(...)):
     file_path = os.path.join(UPLOAD_DIR, file.filename)
     with open(file_path, "wb") as f:
         shutil.copyfileobj(file.file, f)
-    ready = use_pdf(file_path)
-    return
+    ready = bot.use_pdf(file_path)
+    return 
 
        
