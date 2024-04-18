@@ -3,7 +3,7 @@
 
 # Enterprise Grade RAG Solution Template
 
-This is a template for Production Grade RAG solution focusing on Low latency. The code is very modular and contains the most important elements and can be very easily extended for your needs.
+This is a template for Enterprise Grade RAG solution focusing on Low latency. The code is very modular and contains the most important elements and can be very easily extended for your needs.
 
 
 
