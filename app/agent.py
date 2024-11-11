@@ -15,7 +15,7 @@ import asyncio
 import nest_asyncio
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-c_api_key = "csk-pxf585m2cmtk5mevdmn9j522hwe82fy4r42xk4efvnff63f3"
+c_api_key = "Cerebras-api-key"
 def get_db_vectorizer():
     model_name = "sentence-transformers/all-mpnet-base-v2"
     model_kwargs = {'device': 'cpu'}
