@@ -8,6 +8,7 @@ import json
 import shutil
 import nest_asyncio
 import asyncio
+asyncio.set_event_loop_policy(asyncio.DefaultEventLoopPolicy())
 import os
 from agent import ragbot
 

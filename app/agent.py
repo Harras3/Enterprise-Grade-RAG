@@ -4,22 +4,27 @@ import os
 import langchain
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
-from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores.redis import Redis
-from langchain_openai import OpenAI
+from langchain_huggingface import HuggingFaceEmbeddings
 from redisvl.extensions.llmcache import SemanticCache
 from redisvl.utils.vectorize import OpenAITextVectorizer
 from redisvl.utils.vectorize import HFTextVectorizer
-from nemoguardrails import LLMRails, RailsConfig
+# from nemoguardrails import LLMRails, RailsConfig
+from langchain_cerebras import ChatCerebras
 import asyncio
 import nest_asyncio
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-os.environ['OPENAI_API_KEY'] = "Enter your API-KEY here"
-api_key  = "Enter your API-KEY here"
-
+c_api_key = "csk-pxf585m2cmtk5mevdmn9j522hwe82fy4r42xk4efvnff63f3"
 def get_db_vectorizer():
-    vectorizer = OpenAIEmbeddings(api_key=api_key)
+    model_name = "sentence-transformers/all-mpnet-base-v2"
+    model_kwargs = {'device': 'cpu'}
+    encode_kwargs = {'normalize_embeddings': False}
+    vectorizer = HuggingFaceEmbeddings(
+    model_name=model_name,
+    model_kwargs=model_kwargs,
+    encode_kwargs=encode_kwargs
+)
     return vectorizer
 
 def get_cache_vectorizer():
@@ -27,7 +32,9 @@ def get_cache_vectorizer():
     return vectorizer
 
 def get_llm():
-    llm = OpenAI(openai_api_key=api_key)
+    llm = ChatCerebras(
+        model="llama3.1-70b",api_key=c_api_key
+    )
     return llm
 
 # This class contains all the chatbot functionality
@@ -55,7 +62,7 @@ class ragbot:
         vectorizer=hf
         )
         self.start_llm()
-        self.guardrails()
+        # self.guardrails()
         print("setup complete")
         return 
 
@@ -95,11 +102,11 @@ class ragbot:
         return result['result']
 
     # This function is used to setup guardrails
-    def guardrails(self):
-        config = RailsConfig.from_path("config")
-        self.rails = LLMRails(config)
-        self.rails.register_action(self.llm_call,name="llm_call")
-        return
+    # def guardrails(self):
+    #     config = RailsConfig.from_path("config")
+    #     self.rails = LLMRails(config)
+    #     self.rails.register_action(self.llm_call,name="llm_call")
+    #     return
 
     # This function checks for prompt in cache
     def check_cache(self,ques: str):
@@ -117,11 +124,12 @@ class ragbot:
 
     # The main flow of the chatbot is here
     def chat_llm(self,ques: str):
-        nest_asyncio.apply()
+        # nest_asyncio.apply()
         result = self.check_cache(ques)
         result==0
         if result==0:
-            result = self.rails.generate(prompt=ques)
+            # result = self.rails.generate(prompt=ques)
+            result = self.llm_call(ques)
             self.set_cache(ques,result)
             return result
         return result['response']

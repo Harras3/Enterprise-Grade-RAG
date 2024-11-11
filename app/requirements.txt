@@ -4,6 +4,7 @@ langchain-openai
 redisvl
 nemoguardrails
 langchain_community
+langchain-cerebras
 fastapi
 uvicorn
 openai
